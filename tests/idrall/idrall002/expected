@@ -56,7 +56,7 @@ Success: ()
 testing: If
 Error: MissingVar: "if"
 testing: IfNormalizeArguments
-Error: ErrorMessage: "Parse failed at position 0: char '('"
+Error: MissingVar: "if"
 testing: Integer
 Success: ()
 testing: IntegerClamp
@@ -84,7 +84,7 @@ Success: ()
 testing: ListBuild
 Error: ReadFileError: File Not Found //build
 testing: ListFold
-Error: ReadFileError: File Not Found //fold
+Success: ()
 testing: ListHead
 Success: ()
 testing: ListIndexed
@@ -96,7 +96,7 @@ Error: ReadFileError: File Not Found //length
 testing: ListLiteralEmpty
 Success: ()
 testing: ListLiteralEmptyNormalizeAnnotation
-Error: InvalidFieldType: (ERecordLit fromList [((MkFieldName "x"), (EApp (ELam "listArg1" (EConst CType) (EList (EVar "listArg1"))) EBool))])
+Error: InvalidFieldType: (ERecordLit fromList [((MkFieldName "x"), (EApp (ELam listArg1 (EConst CType) (EList (EVar listArg1))) EBool))])
 testing: ListLiteralNormalizeArguments
 Error: MissingVar: "if"
 testing: ListLiteralOne
@@ -366,7 +366,7 @@ Error: ErrorMessage: "Parse failed at position 0: char '('"
 testing: WithNewType
 Error: ErrorMessage: "Parse failed at position 0: char '('"
 DONE
-Passed: 98
-Failed: 85
+Passed: 99
+Failed: 84
 1/1: Building All (All.idr)
 Main> Main> Bye for now!

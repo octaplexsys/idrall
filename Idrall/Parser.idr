@@ -50,6 +50,7 @@ builtin : Parser (Expr ImportStatement)
 builtin =
   (string "Integer/negate" *> pure fIntegerNegate) <|>
   (string "Natural/isZero" *> pure fNaturalIsZero) <|>
+  (string "List/fold" *> pure EListFold) <|>
   (string "List/head" *> pure fListHead) <|>
   (string "List" *> pure fList) <|>
   (string "None" *> pure fNone) <|>
@@ -164,6 +165,7 @@ reservedNames' =
   [ "in", "let", "assert"
   , "->", "&&", ":"
   , "List", "Text", "Optional", "Natural", "Integer", "Double"
+  , "List/fold" , "List/head"
   , "Some", "None"
   , "Type", "Kind", "Sort"]
 
@@ -399,6 +401,7 @@ mutual
      pathTerm <|> esome <|>
      recordType <|> recordLit <|>
      union <|>
+     pi <|>
      var <|> list <|> parens expr)
     spaces
     pure i
@@ -462,10 +465,11 @@ mutual
   opExpr = buildExpressionParser (Expr ImportStatement) table term
 
   expr : Parser (Expr ImportStatement)
-  expr = letExpr <|> pi <|> lam <|> opExpr <|> term
+  expr = letExpr <|> lam <|> opExpr <|> term
 
   parseToEnd : Parser (Expr ImportStatement)
   parseToEnd = do
+    spaces
     e <- expr
     eos
     pure e

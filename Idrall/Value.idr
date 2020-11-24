@@ -1,6 +1,7 @@
 module Idrall.Value
 
 import Idrall.Expr
+import Idrall.Error
 
 mutual
   public export
@@ -14,7 +15,7 @@ mutual
   public export
   data Value
     = VLambda Ty Closure
-    | VHLam HLamInfo (Value -> Value)
+    | VHLam HLamInfo (Value -> Either Error Value)
     | VPi Ty Closure
     | VHPi String Value (Value -> Value)
     | VEquivalent Value Value
@@ -30,6 +31,7 @@ mutual
     | VDoubleLit Double
     | VList Ty
     | VListLit (Maybe Ty) (List Value)
+    | VListFold Value Value Value Value Value
     | VText
     | VTextLit VChunks
     | VOptional Ty
@@ -61,14 +63,19 @@ mutual
   public export
   data HLamInfo
     = Prim
+    | Typed String Value
+    | ListFoldCl Value
 
   public export
-  VPrim : (Value -> Value) -> Value
+  VPrim : (Value -> Either Error Value) -> Value
   VPrim f = VHLam Prim f
 
-  public export
-  vFun : Value -> Value -> Value
-  vFun a b = VHPi "_" a (\_ => b)
+{-
+vApp !t !u = case t of
+  VLam _ t    -> inst t u
+  VHLam _ t   -> t u
+  t           -> VApp t u
+  -}
 
   public export
   data Neutral
@@ -88,6 +95,14 @@ mutual
     | NCombine Neutral Normal
     | NCombineTypes Neutral Normal
 
+  public export
+  vFun : Value -> Value -> Value
+  vFun a b = VHPi "_" a (\_ => b)
+
+  public export
+  vType : Value
+  vType = VConst CType
+
 mutual
   public export
   Show Normal where
@@ -95,6 +110,8 @@ mutual
 
   Show HLamInfo where
     show Prim = "Prim"
+    show (Typed s v) = "(Typed " ++ show s ++ " " ++ show v ++ ")"
+    show (ListFoldCl v) = "(ListFoldCl " ++ show v ++ ")"
 
   public export
   Show Closure where
@@ -125,6 +142,10 @@ mutual
     show (VDoubleLit k) = "(VDoubleLit " ++ show k ++ ")"
     show (VList a) = "(VList " ++ show a ++ ")"
     show (VListLit ty vs) = "(VListLit " ++ show ty ++ show vs ++ ")"
+    show (VListFold v w x y z) =
+      "(VListHead "
+       ++ show v ++ " " ++ show w ++ " " ++ show x ++ " "
+       ++ show y ++ " " ++ show z ++ ")"
     show (VText) = "VText"
     show (VTextLit x) = "(VTextLit " ++ show x ++ ")"
     show (VOptional a) = "(VOptional " ++ show a ++ ")"
