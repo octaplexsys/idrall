@@ -70,13 +70,6 @@ mutual
   VPrim : (Value -> Either Error Value) -> Value
   VPrim f = VHLam Prim f
 
-{-
-vApp !t !u = case t of
-  VLam _ t    -> inst t u
-  VHLam _ t   -> t u
-  t           -> VApp t u
-  -}
-
   public export
   data Neutral
     = NVar Name

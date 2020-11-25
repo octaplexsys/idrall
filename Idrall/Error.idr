@@ -3,6 +3,7 @@ module Idrall.Error
 public export
 data Error
   = MissingVar String
+  | AlphaEquivError String
   | EvalIntegerNegateErr String
   | EvalNaturalIsZeroErr String
   | EvalBoolAndErr
@@ -26,6 +27,7 @@ data Error
 public export
 Show Error where
   show (MissingVar x) = "MissingVar: " ++ show x
+  show (AlphaEquivError x) = "AlphaEquivError:" ++ x
   show (EvalIntegerNegateErr x) = "EvalIntegerNegateErr:" ++ x
   show (EvalNaturalIsZeroErr x) = "EvalNaturalIsZeroErr:" ++ x
   show EvalBoolAndErr = "EvalBoolAndErr"
